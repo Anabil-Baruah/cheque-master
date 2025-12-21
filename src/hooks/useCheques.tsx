@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { Cheque, ChequeStatus, BounceReason, RecoveryStatus, DashboardStats } from '@/types/cheque';
 import { useAuth } from './useAuth';
 import { toast } from '@/hooks/use-toast';
 import { addDays, isBefore, isAfter, startOfDay } from 'date-fns';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export function useCheques() {
   const { user } = useAuth();
@@ -13,14 +13,9 @@ export function useCheques() {
     queryKey: ['cheques', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
-        .from('cheques')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data as Cheque[];
+      const res = await fetch(`${API_BASE}/cheques?user_id=${user.id}`);
+      if (!res.ok) throw new Error('Failed to load cheques');
+      return (await res.json()) as Cheque[];
     },
     enabled: !!user,
   });
@@ -28,14 +23,13 @@ export function useCheques() {
   const addChequeMutation = useMutation({
     mutationFn: async (cheque: Omit<Cheque, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
       if (!user) throw new Error('User not authenticated');
-      const { data, error } = await supabase
-        .from('cheques')
-        .insert([{ ...cheque, user_id: user.id }])
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+      const res = await fetch(`${API_BASE}/cheques`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...cheque, user_id: user.id }),
+      });
+      if (!res.ok) throw new Error('Failed to add cheque');
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cheques'] });
@@ -48,15 +42,13 @@ export function useCheques() {
 
   const updateChequeMutation = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Cheque> & { id: string }) => {
-      const { data, error } = await supabase
-        .from('cheques')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+      const res = await fetch(`${API_BASE}/cheques/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      if (!res.ok) throw new Error('Failed to update cheque');
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cheques'] });
@@ -69,12 +61,8 @@ export function useCheques() {
 
   const deleteChequeMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('cheques')
-        .delete()
-        .eq('id', id);
-      
-      if (error) throw error;
+      const res = await fetch(`${API_BASE}/cheques/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete cheque');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cheques'] });
@@ -95,21 +83,19 @@ export function useCheques() {
       bounce_reason: BounceReason; 
       bounce_remarks?: string 
     }) => {
-      const { data, error } = await supabase
-        .from('cheques')
-        .update({
+      const res = await fetch(`${API_BASE}/cheques/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           status: 'bounced' as ChequeStatus,
           bounce_reason,
           bounce_remarks,
           bounce_date: new Date().toISOString().split('T')[0],
           recovery_status: 'pending' as RecoveryStatus,
-        })
-        .eq('id', id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to mark as bounced');
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cheques'] });

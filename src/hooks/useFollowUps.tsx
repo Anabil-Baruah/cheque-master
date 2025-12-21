@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { FollowUp } from '@/types/cheque';
 import { useAuth } from './useAuth';
 import { toast } from '@/hooks/use-toast';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export function useFollowUps(chequeId?: string) {
   const { user } = useAuth();
@@ -12,14 +12,9 @@ export function useFollowUps(chequeId?: string) {
     queryKey: ['followUps', chequeId],
     queryFn: async () => {
       if (!user || !chequeId) return [];
-      const { data, error } = await supabase
-        .from('follow_ups')
-        .select('*')
-        .eq('cheque_id', chequeId)
-        .order('contact_date', { ascending: false });
-      
-      if (error) throw error;
-      return data as FollowUp[];
+      const res = await fetch(`${API_BASE}/follow-ups?cheque_id=${chequeId}`);
+      if (!res.ok) throw new Error('Failed to load follow-ups');
+      return (await res.json()) as FollowUp[];
     },
     enabled: !!user && !!chequeId,
   });
@@ -27,14 +22,13 @@ export function useFollowUps(chequeId?: string) {
   const addFollowUpMutation = useMutation({
     mutationFn: async (followUp: Omit<FollowUp, 'id' | 'user_id' | 'created_at'>) => {
       if (!user) throw new Error('User not authenticated');
-      const { data, error } = await supabase
-        .from('follow_ups')
-        .insert([{ ...followUp, user_id: user.id }])
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
+      const res = await fetch(`${API_BASE}/follow-ups`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...followUp, user_id: user.id }),
+      });
+      if (!res.ok) throw new Error('Failed to add follow-up');
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['followUps'] });
@@ -47,12 +41,8 @@ export function useFollowUps(chequeId?: string) {
 
   const deleteFollowUpMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('follow_ups')
-        .delete()
-        .eq('id', id);
-      
-      if (error) throw error;
+      const res = await fetch(`${API_BASE}/follow-ups/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete follow-up');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['followUps'] });

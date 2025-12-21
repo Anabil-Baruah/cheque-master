@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 import { ReactNode } from 'react';
@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -19,7 +20,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    router.replace('/auth');
+    return null;
   }
 
   return <>{children}</>;

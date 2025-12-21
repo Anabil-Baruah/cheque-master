@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -25,13 +26,13 @@ const navItems = [
 
 export function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/auth');
+    router.push('/auth');
   };
 
   return (
@@ -74,11 +75,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-1">
             {navItems.map((item) => {
-              const isActive = location.pathname === item.href;
+              const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.href}
-                  to={item.href}
+                  href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',

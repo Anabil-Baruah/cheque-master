@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,7 @@ const signupSchema = z.object({
 });
 
 export default function AuthPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { signIn, signUp, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export default function AuthPage() {
 
   // Redirect if already authenticated
   if (user) {
-    navigate('/dashboard', { replace: true });
+    router.replace('/dashboard');
     return null;
   }
 
@@ -70,7 +70,7 @@ export default function AuthPage() {
         setError(authError.message);
       }
     } else {
-      navigate('/dashboard');
+      router.push('/dashboard');
     }
   };
 
@@ -103,7 +103,7 @@ export default function AuthPage() {
         setError(authError.message);
       }
     } else {
-      navigate('/dashboard');
+      router.push('/dashboard');
     }
   };
 

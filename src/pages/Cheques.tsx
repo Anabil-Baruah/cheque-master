@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useCheques } from '@/hooks/useCheques';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import { Plus, Search, Trash2, Edit, AlertTriangle } from 'lucide-react';
 import { ChequeStatus, BounceReason, BOUNCE_REASONS, CHEQUE_STATUSES } from '@/types/cheque';
 
 export default function ChequesPage() {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const { cheques, isLoading, addCheque, updateCheque, deleteCheque, markAsBounced, isAdding } = useCheques();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');

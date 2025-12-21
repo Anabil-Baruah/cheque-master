@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { useCheques } from '@/hooks/useCheques';
 import { format, isBefore, startOfDay, addDays } from 'date-fns';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChequeStatusBadge } from '@/components/cheques/ChequeStatusBadge';
 import {
@@ -78,7 +78,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Button asChild>
-            <Link to="/cheques?add=true">
+            <Link href="/cheques?add=true">
               <Plus className="h-4 w-4 mr-2" />
               Add Cheque
             </Link>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
           <div className="bg-card rounded-xl border">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="font-semibold">Due This Week</h3>
-              <Link to="/cheques?filter=pending" className="text-sm text-primary hover:underline">
+              <Link href="/cheques?filter=pending" className="text-sm text-primary hover:underline">
                 View all
               </Link>
             </div>
@@ -186,7 +186,7 @@ export default function DashboardPage() {
           <div className="bg-card rounded-xl border">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="font-semibold text-destructive">Overdue</h3>
-              <Link to="/cheques?filter=overdue" className="text-sm text-primary hover:underline">
+              <Link href="/cheques?filter=overdue" className="text-sm text-primary hover:underline">
                 View all
               </Link>
             </div>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
           <div className="bg-card rounded-xl border">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="font-semibold">Bounced - Action Required</h3>
-              <Link to="/bounced" className="text-sm text-primary hover:underline flex items-center gap-1">
+              <Link href="/bounced" className="text-sm text-primary hover:underline flex items-center gap-1">
                 Manage <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
