@@ -1,5 +1,5 @@
 'use client';
-import ChequesPage from '@/pages/Cheques';
+import { ChequesPage } from '@/views/Cheques';
 
 export default function Page() {
   return <ChequesPage />;

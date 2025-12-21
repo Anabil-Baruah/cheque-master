@@ -1,5 +1,5 @@
 'use client';
-import BouncedPage from '@/pages/Bounced';
+import { BouncedPage } from '@/views/Bounced';
 
 export default function Page() {
   return <BouncedPage />;

@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 import { Plus, Search, Trash2, Edit, AlertTriangle } from 'lucide-react';
 import { ChequeStatus, BounceReason, BOUNCE_REASONS, CHEQUE_STATUSES } from '@/types/cheque';
 
-export default function ChequesPage() {
+export function ChequesPage() {
   const searchParams = useSearchParams();
   const { cheques, isLoading, addCheque, updateCheque, deleteCheque, markAsBounced, isAdding } = useCheques();
   const [search, setSearch] = useState('');

@@ -24,7 +24,7 @@ const signupSchema = z.object({
   path: ['confirmPassword'],
 });
 
-export default function AuthPage() {
+export function AuthPage() {
   const router = useRouter();
   const { signIn, signUp, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);

@@ -15,7 +15,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-export default function DashboardPage() {
+export function DashboardPage() {
   const { cheques, stats, isLoading } = useCheques();
 
   const formatCurrency = (amount: number) => {

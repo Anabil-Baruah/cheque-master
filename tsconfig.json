@@ -48,6 +48,10 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/main.tsx",
+    "src/App.tsx",
+    "vite.config.ts",
+    "index.html"
   ]
 }

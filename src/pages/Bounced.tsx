@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 import { Plus, Phone, MessageSquare } from 'lucide-react';
 import { RecoveryStatus, BOUNCE_REASONS, RECOVERY_STATUSES } from '@/types/cheque';
 
-export default function BouncedPage() {
+export function BouncedPage() {
   const { cheques, updateCheque } = useCheques();
   const [selectedChequeId, setSelectedChequeId] = useState<string | null>(null);
   const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
