@@ -242,3 +242,6 @@ export function DashboardPage() {
     </AppLayout>
   );
 }
+export default function Page() {
+  return null;
+}

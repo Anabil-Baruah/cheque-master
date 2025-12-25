@@ -157,3 +157,6 @@ export function ChequesPage() {
     </AppLayout>
   );
 }
+export default function Page() {
+  return null;
+}

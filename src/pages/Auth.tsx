@@ -237,3 +237,6 @@ export function AuthPage() {
     </div>
   );
 }
+export default function Page() {
+  return null;
+}

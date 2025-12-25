@@ -142,3 +142,6 @@ export function BouncedPage() {
     </AppLayout>
   );
 }
+export default function Page() {
+  return null;
+}
