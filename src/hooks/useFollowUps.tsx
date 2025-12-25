@@ -1,12 +1,15 @@
+'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FollowUp } from '@/types/cheque';
 import { useAuth } from './useAuth';
 import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export function useFollowUps(chequeId?: string) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data: followUps = [], isLoading } = useQuery({
     queryKey: ['followUps', chequeId],
@@ -36,6 +39,9 @@ export function useFollowUps(chequeId?: string) {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 
@@ -50,6 +56,9 @@ export function useFollowUps(chequeId?: string) {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 

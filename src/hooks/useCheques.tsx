@@ -1,13 +1,16 @@
+'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Cheque, ChequeStatus, BounceReason, RecoveryStatus, DashboardStats } from '@/types/cheque';
 import { useAuth } from './useAuth';
 import { toast } from '@/hooks/use-toast';
 import { addDays, isBefore, isAfter, startOfDay } from 'date-fns';
+import { useRouter } from 'next/navigation';
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export function useCheques() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data: cheques = [], isLoading } = useQuery({
     queryKey: ['cheques', user?.id],
@@ -37,6 +40,9 @@ export function useCheques() {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 
@@ -56,6 +62,9 @@ export function useCheques() {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 
@@ -70,6 +79,9 @@ export function useCheques() {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 
@@ -103,6 +115,9 @@ export function useCheques() {
     },
     onError: (error: Error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      if (error.message.includes('User not authenticated')) {
+        router.replace('/auth');
+      }
     },
   });
 
