@@ -22,8 +22,14 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the backend API (Express) in another terminal.
+npm run dev:server
+
+# Step 5: Start the Next.js development server.
 npm run dev
+
+# If port 3000 is busy, run on a different port:
+npx next dev -p 3001
 ```
 
 **Edit a file directly in GitHub**
@@ -44,9 +50,47 @@ npm run dev
 
 This project is built with:
 
-- Vite
+- Next.js (App Router)
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Express.js (REST API)
+- Supabase (authentication client)
+
+## Environment variables
+
+Create `.env` in the project root with:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=<your_supabase_url>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<your_supabase_anon_key>
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+```
+
+For production, set `NEXT_PUBLIC_API_BASE_URL` to your deployed API base URL.
+
+## Development
+
+- Backend API: `npm run dev:server` (http://localhost:4000)
+- Frontend app: `npm run dev` (http://localhost:3000)
+
+## Production
+
+```sh
+# Build the Next.js app
+npm run build
+
+# Start the Next.js app
+npm start
+
+# Start the API (in a second terminal or process manager)
+node ./server/index.mjs
+```
+
+## Project structure notes
+
+- App Router pages live under `src/app/*/page.tsx`.
+- UI screens are implemented in `src/pages/*` and re-exported via `src/views/*` for consumption by App Router.
+- Supabase client is configured for client-side usage and guarded for SSR.
 
